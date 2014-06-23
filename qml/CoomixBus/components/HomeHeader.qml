@@ -7,12 +7,11 @@ Rectangle {
     property alias value: st.text
     property alias icon: ic.source
     property bool loading: false
-    property bool canselect: false
     signal select
     width: 360; height: 55; radius: 5
     gradient: Gradient {
-        GradientStop { position: 0.0; color: "#0000ff" }
-        GradientStop { position: 1.0; color: "#00007f" }
+        GradientStop { position: 0.0; color: "#1498ff" }
+        GradientStop { position: 1.0; color: "#1f49ef" }
     }
     Image {
         id: ic
@@ -38,7 +37,6 @@ Rectangle {
     }
     Text {
         id: st
-        visible: canselect
         color: "White"; font.pixelSize: 20
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: sb.left
@@ -46,7 +44,6 @@ Rectangle {
     }
     Image {
         id: sb
-        visible: canselect
         source: "../images/selector.svg"
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: parent.right

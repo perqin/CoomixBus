@@ -9,6 +9,7 @@ TextField {
 
     signal typeStopped;
     signal cleared;
+    //signal textChangedDelay;
 
     onTextChanged: {
         inputTimer.restart();

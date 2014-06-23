@@ -3,51 +3,47 @@ import com.nokia.symbian 1.0
 //import com.nokia.extras 1.0
 //import Qt.labs.components 1.0
 import "components"
-import "parser_home.js" as Js
+import "parser_bus.js" as Js
 
 Page{
     id:page
-    tools: mainTools
-
-    function refreshNotes(){
-        lineHeader.loading=true;
-        Network.setReqUrl("http://busapi.gpsoo.net/v1/bus/mbcommonservice?method=getnotices&looktime=0&type=1&pagesize=15&citycode="+s_citycode);
-        Network.setReqType("note")
-        Network.retrieveData()
-    }
-    function getNotes(){
-        Js.parseJson("note", jsondata);
-        notesData=Js.o_temp;
-        lineHeader.loading=false;
-        var notesString="";
-        for(var i=0; i<Js.o_temp.data.length; i++){
-            notesString=notesString+Js.dtc(i+1)+".【"+Js.o_temp.data[i].name+"】"+Js.o_temp.data[i].title+"\n"+Js.o_temp.data[i].content;
-            if(i != Js.o_temp.data.length-1){
-                notesString=notesString+"\n\n";
+    tools: ToolBarLayout{
+        id:busTools
+        ToolButtonWithTip {
+            toolTipText: "返回"
+            iconSource: "toolbar-back"
+            onClicked: {
+                pageStack.pop();
             }
         }
-        notesText=notesString;
-        if(Js.o_temp.data.length != 0){
-            notesDialog.open();
-        }
-        if(initing==true){
-            refreshAllCities();
-        }
     }
-    function refreshAllCities(){
-        lineHeader.loading=true;
-        Network.setReqUrl(Js.getUrl("city"));
-        Network.setReqType("city");
-        Network.retrieveData();
+    function refreshLine(){
+/*sublineid=99566
+citycode=860515
+lastmodi=0
+lat=4.9E-324
+lng=4.9E-324*/
+        busHeader.loading=true;
+        Js.u_citycode=s_citycode
+        Js.u_lastmodi="0";
+        Js.u_lat="4.9E-324";
+        Js.u_lng="4.9E-324";
+        Js.u_sublineid=busData.id;
+        console.log(Js.getUrl("line"))
+        Network.setReqUrl(Js.getUrl("line"))
+        Network.setReqType("line")
+        Network.setCitycode(s_citycode)
+        Network.retrieveData()
     }
-    function getAllCities(){
-        Js.initCities(jsondata);
-        citySelect.model=Js.cityNameList;
+    function getLine(){
+        lineHeader.value=Js.getCityName(s_citycode)
+        //Js.parseJson("all", jsondata);
+        Js.o_linelist=Network.getDataObj("all");
+        Js.parseJson("all","u");
+        linesList.model=Js.o_alllines;
         lineHeader.loading=false;
-        if(initing==true){
-            refreshAllLines();
-        }
     }
+/*
     function refreshAllLines(){
         lineHeader.loading=true;
         Js.u_citycode=s_citycode
@@ -64,16 +60,36 @@ Page{
         Js.parseJson("all","u");
         linesList.model=Js.o_alllines;
         lineHeader.loading=false;
-        if(initing==true){
-            initing=false;
-        }
     }
-
-    HomeHeader {
-        id: lineHeader; title: "线路"; icon: "images/line.svg"
-        loading: false; value: "null"
-        onSelect: citySelect.open()
+    function refreshAllCities(){
+        lineHeader.loading=true;
+        Network.setReqUrl(Js.getUrl("city"));
+        Network.setReqType("city");
+        Network.retrieveData();
     }
+    function getAllCities(){
+        Js.initCities(jsondata);
+        citySelect.model=Js.cityNameList;
+        lineHeader.loading=false;
+        refreshAllLines();
+    }
+*/
+    BusHeader {
+        id: busHeader; icon: "images/transfer.svg" ;loading: false
+        textL: busData.original_name=="" ? busData.name : busData.name+"(原"+busData.original_name+")"
+        textR1: "首末班"+busData.service_time; textR2: "全程"+"8"+"元"
+    }
+    /*{
+    "direction":"0",
+    "end_station":"大唐芙蓉园南门",
+    "id":"109682",
+    "isopen":"1",
+    "name":"237",
+    "original_name":"237路",
+    "start_station":"北陈村",
+    "service_time":"06:30-19:30"
+    }*/
+    /*
     SelectionDialog {
         id: citySelect
         titleText: "选择你在的城市"
@@ -83,7 +99,7 @@ Page{
             Settings.setValue("citycode", s_citycode);
             refreshAllLines();
         }
-    }
+    }*//*
     Item {
         id: searchBar
         anchors.left: parent.left; anchors.leftMargin: 15
@@ -143,14 +159,6 @@ Page{
                     text: "起点站 "+modelData.start_station+" "+modelData.service_time
                 }
             }
-            onClicked: {
-                lineSearch.text=modelData.name;
-                pb_lineName=modelData.name;
-                pb_lineId=modelData.id;
-                busData=modelData;
-                pageStack.push(busPage);
-                busPage.refreshLine();
-            }
         }
     }
     ListView {
@@ -163,6 +171,7 @@ Page{
         delegate: linesListDelegate
     }
     Component.onCompleted: {
-        refreshNotes();
-    }
+        refreshAllCities();
+        //refreshAllLines();
+    }*/
 }

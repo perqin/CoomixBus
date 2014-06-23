@@ -3,9 +3,11 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlRecord>
 #include <QtSql/QSqlField>
+#include <QByteArray>
+//#include <QStringList>
 
 Network::Network(QObject *parent) :
-    QObject(parent), m_Data("u"), m_ReqUrl("u"), m_ReqType("get")
+    QObject(parent), m_Data("u"), m_ReqUrl("u"), m_ReqType("get"), m_Citycode("0")
 {
     connect(&networkManager, SIGNAL(finished(QNetworkReply*)),
             this, SLOT(handleNetworkData(QNetworkReply*)));
@@ -13,11 +15,9 @@ Network::Network(QObject *parent) :
 
 void Network::retrieveData()
 {
-    qDebug() << "Retrieve start!";
     QUrl url(m_ReqUrl);
     qDebug() << url;
     networkManager.get(QNetworkRequest(url));
-    qDebug() << "Retrieve stop!";
 }
 
 QString Network::getData() const
@@ -56,38 +56,58 @@ void Network::setReqUrl(const QString &p_reqUrl)
     emit sendReqUrlChange();
 }
 
+QString Network::getCitycode() const
+{
+    return m_Citycode;
+}
+
+void Network::setCitycode(const QString &p_citycode)
+{
+    m_Citycode = p_citycode;
+    qDebug() << m_Citycode;
+    emit sendCitycodeChange();
+}
+
+QVariant Network::getDataObj(const QString &p_type) const
+{
+    if(p_type == "all"){
+        return m_AllLines;
+    }
+}
+
 void Network::handleNetworkData(QNetworkReply *networkReply)
 {
-    qDebug() << "Handle start!";
     if(!networkReply->error()){
-        qDebug() << "data = " << m_Data;
-        //setData(networkReply->readAll());
-        //======Sql
-        QSqlDatabase db_db = QSqlDatabase::addDatabase("QSQLITE");
-        db_db.setDatabaseName("json.db");
-        if(!db_db.open()){
-            qDebug() << "Error opening db_db";
+        QByteArray data_qba("");
+        data_qba = networkReply->readAll();
+        if(m_ReqType=="all"){
+            qDebug() << "TYPE:ALL";
+            int i = 0;
+            while(data_qba.mid(i, 7) != "success"){i++;}
+            i += 10;
+            if(data_qba.at(i) == 't'){
+                QByteArray tem("");
+                int l, pl;
+                m_AllLines.clear();
+                while(data_qba.at(i) != '['){i++;}
+                for(l = i; data_qba.at(l) != ']'; l++){
+                    if(data_qba.at(l) == '{'){ pl = l; }
+                    if(data_qba.at(l) == '}'){
+                        tem = data_qba.mid(pl, l - pl + 1);
+                        m_AllLines.append(tem);
+                    }
+                }
+                setData("all");
+            }else{
+                qDebug() << "Data Error!";
+            }
         }else{
-            qDebug() << "Succeed in opening db_db";
+            qDebug() << "TYPE:NOT ALL";
+            setData(data_qba);
+            qDebug() << "data-------" << getData();
         }
-        QSqlQuery db_query(db_db);
-        bool db_ok = db_query.exec("create table person (id int primary key, firstname varchar(20), lastname varchar(20))");
-        db_query.exec("insert into person values(101, 'Danny', 'Young')");
-        db_query.exec("insert into person values(102, 'Christine', 'Holand')");
-        if(!db_ok){
-            qDebug() << "table is error";
-        }else{
-            qDebug() << "table is ok";
-        }
-        //query.exec("INSERT INTO persons VALUES ('xue','chao','langfang')");
-        //db.close();
-        //======Sql_end
-        qDebug() << getData();
-        qDebug() << "Get succeed!";
-        qDebug() << "data = " << m_Data;
     }else{
-        qDebug() << "Get failed!";
-        qDebug() << networkReply->errorString();
+        qDebug() << "Get failed : " << networkReply->errorString();
     }
     networkReply->deleteLater();
 }
