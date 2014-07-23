@@ -26,8 +26,8 @@ lng=4.9E-324*/
         busHeader.loading=true;
         Js.u_citycode=s_citycode
         Js.u_lastmodi="0";
-        Js.u_lat="4.9E-324";
-        Js.u_lng="4.9E-324";
+        Js.u_lat="22.773094";
+        Js.u_lng="114.351272";
         Js.u_sublineid=busData.id;
         console.log(Js.getUrl("line"))
         Network.setReqUrl(Js.getUrl("line"))
@@ -35,50 +35,199 @@ lng=4.9E-324*/
         Network.setCitycode(s_citycode)
         Network.retrieveData()
     }
-    function getLine(){
-        lineHeader.value=Js.getCityName(s_citycode)
-        //Js.parseJson("all", jsondata);
-        Js.o_linelist=Network.getDataObj("all");
-        Js.parseJson("all","u");
-        linesList.model=Js.o_alllines;
-        lineHeader.loading=false;
-    }
-/*
-    function refreshAllLines(){
-        lineHeader.loading=true;
-        Js.u_citycode=s_citycode
-        console.log(Js.getUrl("all"))
-        Network.setReqUrl(Js.getUrl("all"))
-        Network.setReqType("all")
-        Network.setCitycode(s_citycode)
-        Network.retrieveData()
-    }
-    function getAllLines(){
-        lineHeader.value=Js.getCityName(s_citycode)
-        //Js.parseJson("all", jsondata);
-        Js.o_linelist=Network.getDataObj("all");
-        Js.parseJson("all","u");
-        linesList.model=Js.o_alllines;
-        lineHeader.loading=false;
-    }
-    function refreshAllCities(){
-        lineHeader.loading=true;
-        Network.setReqUrl(Js.getUrl("city"));
-        Network.setReqType("city");
+    function refreshDirection(d){
+        busHeader.loading=true;
+        Js.u_citycode=s_citycode;
+        Js.u_lastmodi="0";
+        Js.u_lat=Js.o_line.data.station.lat;
+        Js.u_lng=Js.o_line.data.station.lng;
+        Js.u_sublineid=Js.o_line.data.dir[d].id;
+        console.log(Js.getUrl("line"));
+        Network.setReqUrl(Js.getUrl("line"));
+        Network.setReqType("line");
+        Network.setCitycode(s_citycode);
         Network.retrieveData();
     }
-    function getAllCities(){
-        Js.initCities(jsondata);
-        citySelect.model=Js.cityNameList;
-        lineHeader.loading=false;
-        refreshAllLines();
+    function getLine(){
+        Js.parseJson("line", jsondata);
+        if(fromHome){
+            Js.d_direction=busData.direction;
+        }else{
+            if(Js.o_line.data.dir[0].id==Js.u_sublineid){
+                Js.d_direction=0;
+            }else{
+                Js.d_direction=1;
+            }
+        }
+        busHeader.textR2="全程"+Js.o_line.data.dir[Js.d_direction].price+"元";
+        if(Js.d_direction==0){
+            toBtnClmn.checkedButton=to0Btn;
+        }else{
+            toBtnClmn.checkedButton=to1Btn;
+        }
+        to0Btn.text="开往 "+Js.o_line.data.dir[0].end_station;
+        to1Btn.text="开往 "+Js.o_line.data.dir[1].end_station;
+        myStationText.text="候车站点："+Js.o_line.data.station.name+"（点击刷新）";
+        busHeader.loading=false;
+        stationList.model=Js.o_line.data.dir[Js.d_direction].stations;
+        carList.carsData=Js.o_line.data.cars;
+        carList.sl=Js.o_line.data.dir[Js.d_direction].stations;
+        carList.stationData=Js.o_line.data.station;
+        carList.updateIt();
+        stationList.currentIndex=Js.getSeq();
     }
+    function refreshWait(){
+/*sublineid=99566
+citycode=860515
+lastmodi=0
+lat=4.9E-324
+lng=4.9E-324
+//
+method=getnearcarinfo
+&cn=gm
+&ids=970637,970769,961864,970713---
+&sublineid=99570---
+&stationId=1792591---
+&mapType=BAIDU
+&citycode=860515---
 */
+        busHeader.loading=true;
+        Js.u_sublineid=Js.o_line.data.dir[Js.d_direction].id;
+        Js.u_stationId=Js.o_line.data.station.id;
+        Js.u_citycode=s_citycode;
+        Network.setReqUrl(Js.getUrl("wait"));
+        Network.setReqType("wait");
+        Network.setCitycode(s_citycode);
+        Network.retrieveData();
+    }
+    function getWait(){
+        Js.parseJson("wait", jsondata);
+        busHeader.loading=false;
+        //stationList.model=Js.o_line.data.dir[Js.d_direction].stations;
+        carList.carsData=Js.o_bus.data.cars;
+        Js.setIds();
+        //carList.sl=Js.o_line.data.dir[Js.d_direction].stations;
+        //carList.stationData=Js.o_line.data.station;
+        carList.updateIt();
+    }
     BusHeader {
         id: busHeader; icon: "images/transfer.svg" ;loading: false
         textL: busData.original_name=="" ? busData.name : busData.name+"(原"+busData.original_name+")"
-        textR1: "首末班"+busData.service_time; textR2: "全程"+"8"+"元"
+        textR1: "首末班"+busData.service_time; textR2: "全程?元"
     }
+    Flickable {
+        anchors.top: busHeader.bottom; anchors.topMargin: 15; anchors.bottom: parent.bottom
+        width: parent.width; clip: true; focus:true
+        contentHeight: busPageClmn.height
+        Column {
+            id: busPageClmn; width: parent.width
+            ButtonColumn {
+                id: toBtnClmn
+                anchors.left: parent.left; anchors.leftMargin: 15
+                anchors.right: parent.right; anchors.rightMargin: 15
+                Button {
+                    id: to0Btn
+                    text: "开往 "
+                    width: parent.width
+                    onClicked: {
+                        fromHome=false;
+                        refreshDirection(0);
+                    }
+                }
+                Button {
+                    id: to1Btn
+                    text: "开往 "
+                    width: parent.width
+                    onClicked: {
+                        fromHome=false;
+                        refreshDirection(1);
+                    }
+                }
+            }
+            ListItem {
+                id: myStationListItem
+                anchors.left: parent.left; anchors.right: parent.right
+                anchors.top: toBtnClmn.bottom; anchors.topMargin: 15
+                ListItemText {
+                    id: myStationText
+                    mode: myStationListItem.mode
+                    role: "Title"
+                    text: "候车站点： (点击刷新)"
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.left: parent.left; anchors.leftMargin: 15
+                }
+            }
+            CarList {
+                id: carList
+            }
+            ListView {
+                id: stationList; width: 360; height: 300
+                anchors.left: parent.left; orientation: ListView.Horizontal
+                delegate: stationListDelegate; focus: true
+            }
+        }
+    }
+    Component {
+        id: stationListDelegate
+        Item {
+            id: stationListDelegateRoot; width: 60; height: stationListDelegateClmn.height
+            Column {
+                id: stationListDelegateClmn
+                Image {
+                    id: stationListDelegateImg
+                    width: 60; height: 40
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    source: "images/quit.svg"; opacity: 1
+                }
+                Item {
+                    id: stationListDelegateLine; width: 60; height: 60
+                    //anchors.top: stationListDelegateImg.bottom
+                    Rectangle {
+                        anchors.left: parent.left; anchors.verticalCenter: parent.verticalCenter
+                        width: 30; height: 6; color: "White"
+                        opacity: index==0 ? 0.0 : 1.0
+                    }
+                    Rectangle {
+                        anchors.right: parent.right; anchors.verticalCenter: parent.verticalCenter
+                        width: 30; height: 6; color: "White"
+                        opacity: index==(Js.o_line.data.dir[Js.d_direction].stations.length-1)?0.0:1.0
+                    }
+                    Rectangle {
+                        anchors.centerIn: parent; width: 24; height: 24; color: "Red"; radius: 12
+                        //opacity: ListView.isCurrentItem ? 1.0 : 0.0
+                        visible: stationListDelegateRoot.ListView.isCurrentItem ? true : false
+                    }
+                    Rectangle {
+                        anchors.centerIn: parent; width: 12; height: 12; color: "White"; radius: 6
+                    }
+                }
+                Item {
+                    //anchors.top: stationListDelegateLine.bottom;
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    width: 20; height: 200
+                    Text {
+                        text: modelData.name
+                        font.pixelSize: 20; anchors.fill: parent; wrapMode: Text.Wrap
+                        color: stationListDelegateRoot.ListView.isCurrentItem ? "Red" : "White"
+                    }
+                }
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    stationList.currentIndex  = index;
+                    console.log(stationList.currentIndex);
+                }
+            }
+        }
+    }
+    /*Timer {
+        id: tttt; interval: 100; repeat: true; running: true
+        onTriggered: {
+            console.log(carList.height);
+        }
+    }*/
+
     /*{
     "direction":"0",
     "end_station":"大唐芙蓉园南门",

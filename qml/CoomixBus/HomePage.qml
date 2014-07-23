@@ -149,6 +149,7 @@ Page{
                 pb_lineId=modelData.id;
                 busData=modelData;
                 pageStack.push(busPage);
+                fromHome=true;
                 busPage.refreshLine();
             }
         }

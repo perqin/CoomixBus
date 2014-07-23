@@ -13,6 +13,7 @@ PageStackWindow {
     property variant busData
     property variant notesData
     property string notesText: ""
+    property bool fromHome: true
     /*{
     "direction":"0",
     "end_station":"大唐芙蓉园南门",
@@ -27,6 +28,7 @@ PageStackWindow {
     initialPage: HomePage {
         id: homePage
     }
+    //initialPage: busPage
     BusPage {
         id: busPage
     }
@@ -124,6 +126,9 @@ PageStackWindow {
             }else if(Network.reqType == "line"){
                 console.log("qml--line");
                 busPage.getLine();
+            }else if(Network.reqType == "wait"){
+                console.log("qml--wait");
+                busPage.getWait();
             }
 
             //jsondata=Network.data;

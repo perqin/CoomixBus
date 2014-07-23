@@ -37,13 +37,13 @@ function filterIt(pre){
     var tem_arr = new Array();
     var tem_c = -1;
     for(var i=0; i<o_alllines.length; i++){
-        console.log(o_alllines[i].name);
+        //console.log(o_alllines[i].name);
         if(checkPre(o_alllines[i].name, pre)){
             tem_c += 1;
             tem_arr[tem_c] = o_alllines[i];
-            console.log("ok");
+            //console.log("ok");
         }else{
-            console.log("no");
+            //console.log("no");
         }
     }
     return tem_arr;
