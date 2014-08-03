@@ -129,7 +129,7 @@ Page{
         ListItem {
             id: linesListDelegateListItem
             Column {
-                anchors.fill: linesListDelegateListItem.padding
+                anchors.fill: linesListDelegateListItem.paddingItem
                 ListItemText {
                     //id: titleText
                     mode: linesListDelegateListItem.mode

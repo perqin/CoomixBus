@@ -17,33 +17,55 @@ Item {
             if(tem_z > 1){
                 c0.text=carsData[0].name+"\n还有"+Js.tT(tem_z)+"站,约"+Js.getM(carsData[0].waittime)+"分"+Js.getS(carsData[0].waittime)+"秒";
             }else if(tem_z == 1){
-                if(carsData[0].stationstate=="1"){
+                //if(carsData[0].stationstate=="1"){
                     c0.text=carsData[0].name+"\n即将进站，请做好准备";
-                }
+                //}
             }else if(tem_z == 0){
                 if(carsData[0].stationstate=="1"){
                     c0.text=carsData[0].name+"\n已经进站";
                 }else if(carsData[0].stationstate=="2"){
                     c0.text=carsData[0].name+"\n已经过站";
+                }else{
+                    c0.text=carsData[0].name+"\n已经进站";
                 }
             }
+            carIconX0=Js.getSeq(carsData[0].stationid) * 60;
+            if(carsData[0].stationstate=="2") {
+                carIconX0 = carIconX0 + 30;
+            }
         }else{
-            c0.text="尚未发车"
+            c0.text="尚未发车";
+            carIconX0=0;
         }
         if(carsData.length>1){
             c1.text=carsData[1].name+",约"+Js.getM(carsData[1].waittime)+"分"+Js.getS(carsData[1].waittime)+"秒";
+            carIconX1=Js.getSeq(carsData[1].stationid) * 60;
+            if(carsData[1].stationstate=="2") {
+                carIconX1 = carIconX1 + 30;
+            }
         }else{
-            c1.text="尚未发车"
+            c1.text="尚未发车";
+            carIconX1=0;
         }
         if(carsData.length>2){
             c2.text=carsData[2].name+",约"+Js.getM(carsData[2].waittime)+"分"+Js.getS(carsData[2].waittime)+"秒";
+            carIconX2=Js.getSeq(carsData[2].stationid) * 60;
+            if(carsData[2].stationstate=="2") {
+                carIconX2 = carIconX2 + 30;
+            }
         }else{
-            c2.text="尚未发车"
+            c2.text="尚未发车";
+            carIconX2=0;
         }
         if(carsData.length>3){
             c3.text=carsData[3].name+",约"+Js.getM(carsData[3].waittime)+"分"+Js.getS(carsData[3].waittime)+"秒";
+            carIconX3=Js.getSeq(carsData[3].stationid) * 60;
+            if(carsData[3].stationstate=="2") {
+                carIconX3 = carIconX3 + 30;
+            }
         }else{
-            c3.text="尚未发车"
+            c3.text="尚未发车";
+            carIconX3=0;
         }
     }
     Column {

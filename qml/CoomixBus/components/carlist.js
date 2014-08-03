@@ -23,3 +23,12 @@ function getZ(i, j) {
         }
     }
 }
+
+function getSeq(d){
+    for(var j=0; j<temp_sl.length; j++){
+        if(d==temp_sl[j].id){
+            return j;
+        }
+    }
+    return -1;
+}

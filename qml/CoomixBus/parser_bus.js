@@ -10,6 +10,24 @@ lastmodi=0
 lat=4.9E-324
 lng=4.9E-324*/
 
+function getTimerP(k) {
+    if(k == 0) {
+        return -1;
+    }
+    if(k == 1) {
+        return 1;
+    }
+    if(k == 2) {
+        return 3;
+    }
+    if(k == 3) {
+        return 6;
+    }
+    if(k == 4) {
+        return 12;
+    }
+}
+
 function setIds() {
     var n;
     if(o_bus.data.cars.length>4){
@@ -36,9 +54,12 @@ function getUrl(rt){
     }else if(rt=="bus"){
         //url=urlprefix+"method=get_realtime_city&lastmodi=0&mapType=BAIDU&cn=gm";
     }else if(rt=="wait"){
-        url=urlprefix+"method=getnearcarinfo&cn=gm&ids="+u_ids+"&sublineid="+u_stationId+"&mapType=BAIDU&citycode="+u_citycode;
+        //method=getnearcarinfo&cn=gm&ids=&sublineid=99426&stationId=1907898&mapType=BAIDU&citycode=860515
+        url=urlprefix+"method=getnearcarinfo&cn=gm&ids=&sublineid="+u_sublineid+"&stationId="+u_stationId+"&mapType=BAIDU&citycode="+u_citycode;
+    }else if(rt=="station"){
+        //method=getnearcarinfo&cn=gm&ids=&sublineid=99426&stationId=1907898&mapType=BAIDU&citycode=860515
+        url=urlprefix+"method=getnearcarinfo&cn=gm&ids=&sublineid="+u_sublineid+"&stationId="+u_stationId+"&mapType=BAIDU&citycode="+u_citycode;
     }
-
     return url;
 }
 

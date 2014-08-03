@@ -5,7 +5,8 @@ import "components"
 PageStackWindow {
     id:main
 
-    property string s_citycode: Settings.getValue("citycode", "860515");
+    property string s_citycode: Settings.getValue("citycode", "860515")
+    property int s_refreshfrequency: Settings.getValue("refreshfrequency", 2)
     property bool initing: true
     property string jsondata: "u"
     property string pb_lineName: ""
@@ -14,6 +15,11 @@ PageStackWindow {
     property variant notesData
     property string notesText: ""
     property bool fromHome: true
+    property int timerP: 0
+    property int carIconX0: 0
+    property int carIconX1: 0
+    property int carIconX2: 0
+    property int carIconX3: 0
     /*{
     "direction":"0",
     "end_station":"大唐芙蓉园南门",
@@ -31,6 +37,9 @@ PageStackWindow {
     //initialPage: busPage
     BusPage {
         id: busPage
+    }
+    MorePage {
+        id: morePage
     }
 
     ToolTip {
@@ -81,6 +90,7 @@ PageStackWindow {
             toolTipText: "更多"
             iconSource: "images/more.svg"
             onClicked: {
+                mainTools.toPage(morePage);
             }
         }
     }
@@ -129,10 +139,10 @@ PageStackWindow {
             }else if(Network.reqType == "wait"){
                 console.log("qml--wait");
                 busPage.getWait();
+            }else if(Network.reqType == "station"){
+                console.log("qml--station");
+                busPage.getStation();
             }
-
-            //jsondata=Network.data;
-            //console.log(jsondata);
         }
     }
 }
