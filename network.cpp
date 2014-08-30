@@ -16,7 +16,11 @@ Network::Network(QObject *parent) :
 void Network::retrieveData()
 {
     QUrl url(m_ReqUrl);
-    qDebug() << url;
+    /*if(m_ReqType == "sest") {
+        url = "http://busapi.gpsoo.net/v1/bus/mbcommonservice?method=getmatchedstations&citycode=860515&mapType=G_NORMAL_MAP&cn=gm";
+        url.addQueryItem("stationname", "深圳");
+    }*/
+    qDebug() << "DEBUG_FROM_C++#" << url;
     networkManager.get(QNetworkRequest(url));
 }
 

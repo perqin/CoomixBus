@@ -12,8 +12,8 @@ Page{
     function refreshNotes(){
         lineHeader.loading=true;
         Network.setReqUrl("http://busapi.gpsoo.net/v1/bus/mbcommonservice?method=getnotices&looktime=0&type=1&pagesize=15&citycode="+s_citycode);
-        Network.setReqType("note")
-        Network.retrieveData()
+        Network.setReqType("note");
+        Network.retrieveData();
     }
     function getNotes(){
         Js.parseJson("note", jsondata);
@@ -27,7 +27,7 @@ Page{
             }
         }
         notesText=notesString;
-        if(Js.o_temp.data.length != 0){
+        if((Js.o_temp.data.length != 0)&&(s_shownotes == 1)){
             notesDialog.open();
         }
         if(initing==true){
@@ -93,8 +93,7 @@ Page{
         SearchInput {
             id: lineSearch
             hint: "在这里输入线路"
-            anchors.left: parent.left; anchors.top: parent.top
-            anchors.right: lineSearchButton.left; anchors.rightMargin: 15
+            anchors.top: parent.top; width: parent.width;
             onTypeStopped: {
                 if(text == ""){
                     linesList.model = Js.o_alllines;
@@ -103,25 +102,47 @@ Page{
                 }
             }
         }
-        Button {
-            id: lineSearchButton
-            anchors.right: parent.right; anchors.top: parent.top
-            iconSource: privateStyle.toolBarIconPath("toolbar-search", true)
-        }
     }
     ButtonRow {
         id: historyOrAll
         anchors.left: parent.left; anchors.leftMargin: 15
         anchors.right: parent.right; anchors.rightMargin: 15
         anchors.top: searchBar.bottom; anchors.topMargin: 15
-        visible: lineSearch.empty ? true : false
-        Button {
-            id: historyLines
-            text: "常用线路"
-        }
+        //visible: lineSearch.empty ? true : false
         Button {
             id: allLines
             text: "全部线路"
+            checked: true
+            onClicked: {
+                homeListTabGroup.currentTab = linesList;
+            }
+        }
+        Button {
+            id: historyLines
+            text: "常用线路"
+            onClicked: {
+                homeListTabGroup.currentTab = historyList;
+            }
+        }
+    }
+    TabGroup {
+        id: homeListTabGroup
+        anchors.left: parent.left; anchors.leftMargin: 15
+        anchors.right: parent.right; anchors.rightMargin: 15
+        anchors.top: historyOrAll.bottom; anchors.topMargin: 15
+        anchors.bottom: parent.bottom
+        currentTab: linesList
+        ListView {
+            id: linesList
+            clip: true; anchors.fill: parent
+            //model: Js.historyList
+            delegate: linesListDelegate
+        }
+        ListView {
+            id: historyList
+            clip: true; anchors.fill: parent
+            model: Js.historyList
+            delegate: linesListDelegate
         }
     }
     Component {
@@ -144,6 +165,9 @@ Page{
                 }
             }
             onClicked: {
+                Js.appendHistory(modelData);
+                Settings.setValue("historylist", Js.historyListString);
+                historyList.model = Js.historyList;
                 lineSearch.text=modelData.name;
                 pb_lineName=modelData.name;
                 pb_lineId=modelData.id;
@@ -154,16 +178,13 @@ Page{
             }
         }
     }
-    ListView {
-        id: linesList
-        anchors.left: parent.left; anchors.leftMargin: 15
-        anchors.right: parent.right; anchors.rightMargin: 15
-        anchors.top: lineSearch.empty ? historyOrAll.bottom : searchBar.bottom
-        anchors.topMargin: 15; anchors.bottom: parent.bottom; clip: true
-        model: Js.historyList
-        delegate: linesListDelegate
-    }
+
     Component.onCompleted: {
+        Js.historyListString = s_historylist;
+        console.log("###########");
+        console.log(Js.historyListString);
+        Js.setHistoryList();
+        historyList.model = Js.historyList;
         refreshNotes();
     }
 }

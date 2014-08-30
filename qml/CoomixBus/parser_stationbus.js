@@ -1,43 +1,16 @@
-var allList, filterList;
+var urlprefix = "http://busapi.gpsoo.net/v1/bus/mbcommonservice?";
+var stationBusList = new Array();
+/*var allList, filterList;
+var searchList = new Array();
 var historyList = new Array();
 var historyListString = "[]";
-/*var cityList = [{"name":"深圳","code":"860515"},
-                {"name":"惠州","code":"860506"},
-                {"name":"西安","code":"862307"},
-                {"name":"北京","code":"860201"}];*/
-//var cityList = new Array();
 var cityList;
 var cityNameList = new Array();
-var urlprefix = "http://busapi.gpsoo.net/v1/bus/mbcommonservice?";
 var u_citycode;
 var o_alllines = new Array();
 var o_linelist;
 var o_temp = new Object();
 
-function setHistoryList() {
-    console.log("#1");
-    historyList = JSON.parse(historyListString);
-    console.log("#2");
-}
-
-function appendHistory(obje) {
-    if(historyList.length == 0) {
-        historyList.push(obje);
-    }else{
-        var booHaved = false;
-        for(var i = 0; i < historyList.length; i++) {
-            if(historyList[i].id == obje.id) {
-                booHaved = true;
-                break;
-            }
-            if(booHaved == false){
-                historyList.push(obje);
-            }
-        }
-    }
-    historyListString = JSON.stringify(historyList);
-    console.log(historyListString);
-}
 
 function checkPre(s, p){
     var b = true;
@@ -53,7 +26,7 @@ function parseJson(t,j){
     if(t=="all"){
         for(var i=0; i<o_linelist.length; i++){
             o_alllines[i] = JSON.parse(o_linelist[i]);
-            //console.log(o_alllines[i].name)
+            console.log(o_alllines[i].name)
         }
     }else if(t=="note"){
         o_temp=JSON.parse(j);
@@ -97,14 +70,43 @@ function initCities(s){
         return false;
     }
 }
+*/
+/*
+function setHistoryList() {
+    historyList = JSON.parse(historyListString);
+}
 
-function getUrl(rt){
-    var url="";
-    if(rt=="all"){
-        url=urlprefix+"method=get_all_lines&citycode="+u_citycode+"&mapType=BAIDU&cn=gm&lastmodi=0";
-    }else if(rt=="city"){
-        url=urlprefix+"method=get_realtime_city&lastmodi=0&mapType=BAIDU&cn=gm";
+function appendHistory(obje) {
+    if(historyList.length == 0) {
+        historyList.push(obje);
+    }else{
+        var booHaved = false;
+        for(var i = 0; i < historyList.length; i++) {
+            if(historyList[i].station_name == obje.station_name) {
+                booHaved = true;
+                console.log("booTrue");
+                break;
+            }
+        }
+        if(booHaved == false){
+            console.log("booFalse");
+            historyList.push(obje);
+        }
     }
+    historyListString = JSON.stringify(historyList);
+    console.log(historyListString);
+}*/
+
+function parseIt(d) {
+    var o = JSON.parse(d);
+    stationBusList = o.data;
+    //for(var k = 0; k < o.data.length; k++){console.log(o.data[k].station_name + "///");}
+}
+
+function getUrl(cc, sn){
+    //method=get_line_by_station&station_name=富地岗&citycode=860515
+    var url="";
+    url=urlprefix+"method=get_line_by_station&station_name=" + sn + "&citycode=" + cc;
     return url;
 }
 

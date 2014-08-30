@@ -18,7 +18,25 @@ Page {
             ListHeading {
                 ListItemText {
                     anchors.fill: parent.paddingItem; role: "Heading"
-                    text: "公告"
+                    text: "查看公告"
+                }
+            }
+            Item {
+                width: parent.width; height: 70;
+                CheckBox {
+                    checked: s_shownotes == 1 ? true : false;
+                    anchors.leftMargin: platformStyle.paddingLarge; anchors.left: parent.left
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: "打开时弹出公告";
+                    onClicked: {
+                        console.log(parent.height);
+                        if(s_shownotes == 1){
+                            s_shownotes = 0;
+                        }else{
+                            s_shownotes = 1;
+                        }
+                        Settings.setValue("shownotes", s_shownotes);
+                    }
                 }
             }
             ListItem {
@@ -28,6 +46,9 @@ Page {
                     anchors.verticalCenter: parent.paddingItem.verticalCenter
                     anchors.left: parent.paddingItem.left
                     text: "公告"
+                }
+                onClicked: {
+                    notesDialog.open();
                 }
             }
             ListHeading {
@@ -76,7 +97,7 @@ Page {
                     }
                     ListItemText {
                         role: "SubTitle"; mode: versionLI.mode
-                        text: "2.0.0 pre-alpha 版"
+                        text: "0.1.0"
                     }
                 }
             }

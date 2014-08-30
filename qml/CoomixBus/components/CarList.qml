@@ -33,6 +33,11 @@ Item {
             if(carsData[0].stationstate=="2") {
                 carIconX0 = carIconX0 + 30;
             }
+            if((tem_z == 0)&&(carsData[0].stationstate == "2")) {
+                carPass0 = true;
+            }else{
+                carPass0 = false;
+            }
         }else{
             c0.text="尚未发车";
             carIconX0=0;
@@ -42,6 +47,11 @@ Item {
             carIconX1=Js.getSeq(carsData[1].stationid) * 60;
             if(carsData[1].stationstate=="2") {
                 carIconX1 = carIconX1 + 30;
+            }
+            if((tem_z == 0)&&(carsData[1].stationstate == "2")) {
+                carPass1 = true;
+            }else{
+                carPass1 = false;
             }
         }else{
             c1.text="尚未发车";
@@ -53,6 +63,11 @@ Item {
             if(carsData[2].stationstate=="2") {
                 carIconX2 = carIconX2 + 30;
             }
+            if((tem_z == 0)&&(carsData[2].stationstate == "2")) {
+                carPass2 = true;
+            }else{
+                carPass2 = false;
+            }
         }else{
             c2.text="尚未发车";
             carIconX2=0;
@@ -62,6 +77,11 @@ Item {
             carIconX3=Js.getSeq(carsData[3].stationid) * 60;
             if(carsData[3].stationstate=="2") {
                 carIconX3 = carIconX3 + 30;
+            }
+            if((tem_z == 0)&&(carsData[3].stationstate == "2")) {
+                carPass3 = true;
+            }else{
+                carPass3 = false;
             }
         }else{
             c3.text="尚未发车";

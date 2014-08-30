@@ -234,28 +234,28 @@ lng=4.9E-324*/
             }
             Image {
                 id: carIcon0; width: 60; height: 40
-                anchors.top: carList.bottom; x: 0
-                source: "images/carIcon.png"; opacity: 1
+                anchors.top: carList.bottom; x: 0//; anchors.topMargin: 25
+                source: carPass0 ? "images/carIconG.png" : "images/carIconB.png"; opacity: 1
             }
             Image {
                 id: carIcon1; width: 60; height: 40
-                anchors.top: carList.bottom; x: 60
-                source: "images/carIcon.png"; opacity: 1
+                anchors.top: carList.bottom; x: 0//; anchors.topMargin: 25
+                source: carPass1 ? "images/carIconG.png" : "images/carIconB.png"; opacity: 1
             }
             Image {
                 id: carIcon2; width: 60; height: 40
-                anchors.top: carList.bottom; x: 60
-                source: "images/carIcon.png"; opacity: 1
+                anchors.top: carList.bottom; x: 0//; anchors.topMargin: 25
+                source: carPass2 ? "images/carIconG.png" : "images/carIconB.png"; opacity: 1
             }
             Image {
                 id: carIcon3; width: 60; height: 40
-                anchors.top: carList.bottom; x: 60
-                source: "images/carIcon.png"; opacity: 1
+                anchors.top: carList.bottom; x: 0//; anchors.topMargin: 25
+                source: carPass3 ? "images/carIconG.png" : "images/carIconB.png"; opacity: 1
             }
             ListView {
                 id: stationList; width: 360; height: 300
                 anchors.left: parent.left; orientation: ListView.Horizontal
-                anchors.top: carList.bottom; anchors.topMargin: 40
+                anchors.top: carList.bottom; anchors.topMargin: 20
                 delegate: stationListDelegate; focus: true
                 onContentXChanged: {
                     repositionCarIcon(contentX);

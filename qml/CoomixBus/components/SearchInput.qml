@@ -23,22 +23,12 @@ TextField {
         interval: 500;
         onTriggered: root.typeStopped();
     }
-/*
-    Image {
-        id: searchIcon;
-        anchors { left: parent.left; leftMargin: platformStyle.paddingMedium; verticalCenter: parent.verticalCenter; }
-        height: platformStyle.graphicSizeSmall;
-        width: platformStyle.graphicSizeSmall;
-        sourceSize: Qt.size(platformStyle.graphicSizeSmall, platformStyle.graphicSizeSmall);
-        source: privateStyle.toolBarIconPath("toolbar-search", true);
-    }
-*/
     Item {
         id: clearButton;
         anchors { right: parent.right; rightMargin: platformStyle.paddingMedium; verticalCenter: parent.verticalCenter; }
         height: platformStyle.graphicSizeSmall;
         width: platformStyle.graphicSizeSmall;
-        opacity: root.activeFocus ? 1 : 0;
+        opacity: (root.activeFocus && (root.text != "")) ? 1 : 0;
         Behavior on opacity {
             NumberAnimation { duration: 100; }
         }

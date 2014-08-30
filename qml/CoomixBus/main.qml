@@ -6,7 +6,10 @@ PageStackWindow {
     id:main
 
     property string s_citycode: Settings.getValue("citycode", "860515")
-    property int s_refreshfrequency: Settings.getValue("refreshfrequency", 2)
+    property int s_refreshfrequency: Settings.getValue("refreshfrequency", 2);
+    property string s_historylist: Settings.getValue("historylist", "[]");
+    property string s_historystationlist: Settings.getValue("historystationlist", "[]");
+    property int s_shownotes: Settings.getValue("shownotes", 1);
     property bool initing: true
     property string jsondata: "u"
     property string pb_lineName: ""
@@ -20,6 +23,10 @@ PageStackWindow {
     property int carIconX1: 0
     property int carIconX2: 0
     property int carIconX3: 0
+    property bool carPass0: false
+    property bool carPass1: false
+    property bool carPass2: false
+    property bool carPass3: false
     /*{
     "direction":"0",
     "end_station":"大唐芙蓉园南门",
@@ -40,6 +47,12 @@ PageStackWindow {
     }
     MorePage {
         id: morePage
+    }
+    StationPage {
+        id: stationPage
+    }
+    StationBusPage {
+        id: stationBusPage;
     }
 
     ToolTip {
@@ -77,7 +90,8 @@ PageStackWindow {
             toolTipText: "站点"
             iconSource: "images/station.svg"
             onClicked: {
-
+                mainTools.toPage(stationPage);
+                stationPage.updateListView();
             }
         }
         ToolButtonWithTip {
@@ -142,6 +156,12 @@ PageStackWindow {
             }else if(Network.reqType == "station"){
                 console.log("qml--station");
                 busPage.getStation();
+            }else if(Network.reqType == "sest"){
+                console.log("qml--sest");
+                stationPage.getSearchStations();
+            }else if(Network.reqType == "stbu"){
+                console.log("qml--stbu");
+                stationBusPage.getStationBusList();
             }
         }
     }

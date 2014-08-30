@@ -16,7 +16,15 @@ symbian:TARGET.UID3 = 0x205051AA
 #symbian:DEPLOYMENT.installer_header = 0x2002CCCF
 
 # Allow network access on Symbian
-symbian:TARGET.CAPABILITY += NetworkServices
+symbian {
+    TARGET.CAPABILITY += NetworkServices
+
+    my_deployment.pkg_prerules += vendorinfo
+
+    DEPLOYMENT += my_deployment
+
+    vendorinfo += "%{\"Perqin\"}" ":\"Perqin\""
+}
 
 # If your application uses the Qt Mobility libraries, uncomment the following
 # lines and add the respective components to the MOBILITY variable.
