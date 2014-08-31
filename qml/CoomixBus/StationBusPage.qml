@@ -7,7 +7,15 @@ import "parser_stationbus.js" as Js
 
 Page{
     id:page
-    tools: mainTools
+    tools: ToolBarLayout {
+        ToolButtonWithTip {
+            toolTipText: "返回"
+            iconSource: "toolbar-back"
+            onClicked: {
+                pageStack.pop();
+            }
+        }
+    }
 
     property string uqi_stationname: ""
 
@@ -26,9 +34,10 @@ Page{
 
     CommonHeader {
         id: stationBusHeader; icon: "images/station.svg" ;loading: false; title: "XX站点 共Y条线路";
-        Button {
+        ToolButton {
             iconSource: "toolbar-refresh"; anchors.verticalCenter: parent.verticalCenter;
             anchors.right: parent.right; anchors.rightMargin: (parent.height - height) / 2;
+            enabled: !parent.loading
             onClicked: {
                 refreshStationBusList();
             }
@@ -61,18 +70,27 @@ Page{
             Text {
                 anchors.verticalCenter: parent.verticalCenter; color: "White"
                 anchors.right: parent.right; anchors.rightMargin: 35;
-                text: modelData.isopen == "0" ? "未开通" : (modelData.wait_time == 99999 ? "尚未发车" : ((modelData.wait_time - (modelData.wait_time % 60))/60));
+                text: modelData.isopen == "0" ? "未开通" : (modelData.wait_time == 99999 ? "尚未发车" : ("还有" + Js.dtc((modelData.wait_time - (modelData.wait_time % 60))/60) + "分钟"));
             }
             onClicked: {
                 if(modelData.isopen == "1") {
-                    //Js.appendHistory(modelData);
-                    //Settings.setValue("historylist", Js.historyListString);
-                    //historyList.model = Js.historyList;
-                    pb_lineName=modelData.line_name;
-                    pb_lineId=modelData.sublineid;
-                    //?????busData=modelData;
+                    var mD = Js.makeModelData(modelData.dir,
+                                              modelData.end_station,
+                                              modelData.sublineid,
+                                              modelData.isopen,
+                                              modelData.line_name,
+                                              "",
+                                              modelData.start_station,
+                                              modelData.begin_time + "-" + modelData.end_time);
+                    Js.setHistoryList(s_historylist);
+                    Js.appendHistory(mD);
+                    s_historylist = Js.historyListString;
+                    Settings.setValue("historylist", s_historylist);
                     pageStack.push(busPage);
-                    //?????fromHome=false;
+                    busPage.lineData = mD;
+                    directionChanged = false;
+                    locationLat = modelData.station.lat;
+                    locationLng = modelData.station.lng;
                     busPage.refreshLine();
                 }
             }

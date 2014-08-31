@@ -7,6 +7,9 @@ import "parser_bus.js" as Js
 
 Page{
     id:page
+
+    property variant lineData;
+
     tools: ToolBarLayout{
         id:busTools
         ToolButtonWithTip {
@@ -51,11 +54,11 @@ lastmodi=0
 lat=4.9E-324
 lng=4.9E-324*/
         busHeader.loading=true;
-        Js.u_citycode=s_citycode
+        Js.u_citycode=s_citycode;
         Js.u_lastmodi="0";
-        Js.u_lat="22.773094";
-        Js.u_lng="114.351272";
-        Js.u_sublineid=busData.id;
+        Js.u_lat=locationLat;
+        Js.u_lng=locationLng;
+        Js.u_sublineid=lineData.id;
         console.log(Js.getUrl("line"))
         Network.setReqUrl(Js.getUrl("line"))
         Network.setReqType("line")
@@ -77,15 +80,17 @@ lng=4.9E-324*/
     }
     function getLine(){
         Js.parseJson("line", jsondata);
-        if(fromHome){
-            Js.d_direction=busData.direction;
+        if(Js.o_line.data.dir[0].id==Js.u_sublineid){
+            Js.d_direction=0;
         }else{
-            if(Js.o_line.data.dir[0].id==Js.u_sublineid){
-                Js.d_direction=0;
-            }else{
-                Js.d_direction=1;
-            }
+            Js.d_direction=1;
         }
+        if(Js.o_line.data.lineinfo.original_name == "") {
+            busHeader.textL = Js.o_line.data.lineinfo.name;
+        }else{
+            busHeader.textL = Js.o_line.data.lineinfo.name + "(原" + Js.o_line.data.lineinfo.original_name + ")";
+        }
+        busHeader.textR1 = "首末班 " + Js.o_line.data.dir[Js.d_direction].service_time;
         busHeader.textR2="全程"+Js.o_line.data.dir[Js.d_direction].price+"元";
         if(Js.d_direction==0){
             toBtnClmn.checkedButton=to0Btn;
@@ -95,7 +100,6 @@ lng=4.9E-324*/
         to0Btn.text="开往 "+Js.o_line.data.dir[0].end_station;
         to1Btn.text="开往 "+Js.o_line.data.dir[1].end_station;
         myStationText.text="候车站点："+Js.o_line.data.station.name+"（点击刷新）";
-        busHeader.loading=false;
         stationList.model=Js.o_line.data.dir[Js.d_direction].stations;
         carList.carsData=Js.o_line.data.cars;
         carList.sl=Js.o_line.data.dir[Js.d_direction].stations;
@@ -107,6 +111,7 @@ lng=4.9E-324*/
             timerP = 0;
             refreshBusTimer.running = true;
         }
+        busHeader.loading=false;
     }
     function refreshWait(){
         //method=getnearcarinfo&cn=gm&ids=&sublineid=99426&stationId=1907898&mapType=BAIDU&citycode=860515
@@ -178,8 +183,8 @@ lng=4.9E-324*/
 
     BusHeader {
         id: busHeader; icon: "images/transfer.svg" ;loading: false
-        textL: busData.original_name=="" ? busData.name : busData.name+"(原"+busData.original_name+")"
-        textR1: "首末班"+busData.service_time; textR2: "全程?元"
+        textL: "LINENAME";
+        textR1: "首末班 HH:MM-HH:MM"; textR2: "全程P元"
     }
     Flickable {
         anchors.top: busHeader.bottom; anchors.topMargin: 15; anchors.bottom: parent.bottom
@@ -196,7 +201,7 @@ lng=4.9E-324*/
                     text: "开往 "
                     width: parent.width
                     onClicked: {
-                        fromHome=false;
+                        directionChanged = true;
                         refreshBusTimer.running = false;
                         refreshDirection(0);
                     }
@@ -206,7 +211,7 @@ lng=4.9E-324*/
                     text: "开往 "
                     width: parent.width
                     onClicked: {
-                        fromHome=false;
+                        directionChanged = true;
                         refreshBusTimer.running = false;
                         refreshDirection(1);
                     }

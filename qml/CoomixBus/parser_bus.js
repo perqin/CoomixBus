@@ -64,14 +64,11 @@ function getUrl(rt){
 }
 
 function getSeq(){
-    //console.log("****************");
-    //console.log(d_direction);
-    //console.log(u_sublineid);
     for(var j=0; j<o_line.data.dir[d_direction].stations.length; j++){
-        console.log(o_line.data.dir[d_direction].stations[j].id);
+        //console.log(o_line.data.dir[d_direction].stations[j].id);
         if(o_line.data.dir[d_direction].stations[j].id==o_line.data.station.id){
-            //console.log(j);
-            //console.log("****************");
+            console.log("Station Seq : ");
+            console.log(j);
             return j;
         }
     }

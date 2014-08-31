@@ -7,4 +7,4 @@
 # Version :  
 #  
 # ==============================================================================  
-QT_SIS_TARGET ?= DEBUG-GCCE 
+QT_SIS_TARGET ?= RELEASE-GCCE 

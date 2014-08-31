@@ -14,10 +14,11 @@ var o_alllines = new Array();
 var o_linelist;
 var o_temp = new Object();
 
-function setHistoryList() {
-    console.log("#1");
+function setHistoryList(s) {
+    console.log("kkk");
+    console.log(s);
+    historyListString = s;
     historyList = JSON.parse(historyListString);
-    console.log("#2");
 }
 
 function appendHistory(obje) {
@@ -36,7 +37,6 @@ function appendHistory(obje) {
         }
     }
     historyListString = JSON.stringify(historyList);
-    console.log(historyListString);
 }
 
 function checkPre(s, p){

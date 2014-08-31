@@ -41,11 +41,12 @@ Page {
             }
             ListItem {
                 subItemIndicator: true
+                enabled: haveNotes;
                 ListItemText {
                     role: "Title"; mode: parent.mode
                     anchors.verticalCenter: parent.paddingItem.verticalCenter
                     anchors.left: parent.paddingItem.left
-                    text: "公告"
+                    text: haveNotes ? "公告" : "没有公告";
                 }
                 onClicked: {
                     notesDialog.open();
@@ -97,7 +98,7 @@ Page {
                     }
                     ListItemText {
                         role: "SubTitle"; mode: versionLI.mode
-                        text: "0.1.0"
+                        text: "1.1.0"
                     }
                 }
             }

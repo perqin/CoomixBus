@@ -71,7 +71,10 @@ function initCities(s){
 }
 */
 
-function setHistoryList() {
+function setHistoryList(s) {
+    console.log("lllll");
+    console.log(s);
+    historyListString = s;
     historyList = JSON.parse(historyListString);
 }
 

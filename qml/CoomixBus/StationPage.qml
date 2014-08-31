@@ -10,6 +10,7 @@ Page{
     tools: mainTools
 
     function updateListView(){
+        Js.setHistoryList(s_historystationlist);
         historyStationsList.model = Js.historyList;
         //nearbyStationsList.model = Js.nearbyList;
     }
@@ -65,7 +66,7 @@ Page{
             onTypeStopped: {
                 if(text == ""){
                     stationListTabGroup.currentTab = historyStationsList;
-                }else if(text == "1"){text = "深圳";}
+                }else if(text == "1"){text = "坪洲百货";}
             }
         }
         Button {
@@ -82,7 +83,7 @@ Page{
         anchors.left: parent.left; anchors.leftMargin: 15
         anchors.right: parent.right; anchors.rightMargin: 15
         anchors.top: searchBar.bottom; anchors.topMargin: 15
-        visible: stationSearch.empty ? true : false
+        visible: stationListTabGroup.currentTab !== searchStationsList ? true : false
         Button {
             id: historyStations
             text: "常用站点"
@@ -136,19 +137,14 @@ Page{
                 anchors.verticalCenter: parent.verticalCenter; anchors.left: parent.paddingItem.left;
             }
             onClicked: {
+                Js.setHistoryList(s_historystationlist);
                 Js.appendHistory(modelData);
-                Settings.setValue("historystationlist", Js.historyListString);
+                s_historystationlist = Js.historyListString;
+                Settings.setValue("historystationlist", s_historystationlist);
                 historyStationsList.model = Js.historyList;
                 pageStack.push(stationBusPage);
                 stationBusPage.uqi_stationname = modelData.station_name;
                 stationBusPage.refreshStationBusList();
-                /*lineSearch.text=modelData.name;
-                pb_lineName=modelData.name;
-                pb_lineId=modelData.id;
-                busData=modelData;
-                pageStack.push(busPage);
-                fromHome=true;
-                busPage.refreshLine();*/
             }
         }
     }

@@ -1,5 +1,7 @@
 var urlprefix = "http://busapi.gpsoo.net/v1/bus/mbcommonservice?";
 var stationBusList = new Array();
+var historyList = new Array();
+var historyListString = "[]";
 /*var allList, filterList;
 var searchList = new Array();
 var historyList = new Array();
@@ -96,6 +98,45 @@ function appendHistory(obje) {
     historyListString = JSON.stringify(historyList);
     console.log(historyListString);
 }*/
+
+function setHistoryList(s) {
+    historyListString = s;
+    historyList = JSON.parse(historyListString);
+}
+
+function appendHistory(obje) {
+    if(historyList.length == 0) {
+        historyList.push(obje);
+    }else{
+        var booHaved = false;
+        for(var i = 0; i < historyList.length; i++) {
+            if(historyList[i].station_name == obje.station_name) {
+                booHaved = true;
+                //console.log("booTrue");
+                break;
+            }
+        }
+        if(booHaved == false){
+            //console.log("booFalse");
+            historyList.push(obje);
+        }
+    }
+    historyListString = JSON.stringify(historyList);
+    //console.log(historyListString);
+}
+
+function makeModelData(d, es, id, io, n, o, ss, st) {
+    var md = new Object();
+    md.direction = d;
+    md.end_station = es;
+    md.id = id;
+    md.isopen = io;
+    md.name = n;
+    md.original_name = o;
+    md.start_station = ss;
+    md.service_time = st;
+    return md;
+}
 
 function parseIt(d) {
     var o = JSON.parse(d);

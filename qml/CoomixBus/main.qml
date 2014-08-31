@@ -12,12 +12,9 @@ PageStackWindow {
     property int s_shownotes: Settings.getValue("shownotes", 1);
     property bool initing: true
     property string jsondata: "u"
-    property string pb_lineName: ""
-    property string pb_lineId: ""
-    property variant busData
     property variant notesData
     property string notesText: ""
-    property bool fromHome: true
+    property bool directionChanged: false;
     property int timerP: 0
     property int carIconX0: 0
     property int carIconX1: 0
@@ -27,6 +24,9 @@ PageStackWindow {
     property bool carPass1: false
     property bool carPass2: false
     property bool carPass3: false
+    property string locationLat: "22.773094";
+    property string locationLng: "114.351272";
+    property bool haveNotes: false;
     /*{
     "direction":"0",
     "end_station":"大唐芙蓉园南门",

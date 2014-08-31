@@ -165,25 +165,22 @@ Page{
                 }
             }
             onClicked: {
+                Js.setHistoryList(s_historylist);
                 Js.appendHistory(modelData);
-                Settings.setValue("historylist", Js.historyListString);
+                s_historylist = Js.historyListString;
+                Settings.setValue("historylist", s_historylist);
                 historyList.model = Js.historyList;
                 lineSearch.text=modelData.name;
-                pb_lineName=modelData.name;
-                pb_lineId=modelData.id;
-                busData=modelData;
                 pageStack.push(busPage);
-                fromHome=true;
+                busPage.lineData = modelData;
+                directionChanged = false;
                 busPage.refreshLine();
             }
         }
     }
 
     Component.onCompleted: {
-        Js.historyListString = s_historylist;
-        console.log("###########");
-        console.log(Js.historyListString);
-        Js.setHistoryList();
+        Js.setHistoryList(s_historylist);
         historyList.model = Js.historyList;
         refreshNotes();
     }
