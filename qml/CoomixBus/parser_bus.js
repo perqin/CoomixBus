@@ -51,8 +51,6 @@ function getUrl(rt){
     var url="";
     if(rt=="line"){
         url=urlprefix+"method=getnearcarinfov4&sublineid="+u_sublineid+"&mapType=BAIDU&citycode="+u_citycode+"&cn=gm&posmaptype=BAIDU&lastmodi="+u_lastmodi+"&lat="+u_lat+"&lng="+u_lng;
-    }else if(rt=="bus"){
-        //url=urlprefix+"method=get_realtime_city&lastmodi=0&mapType=BAIDU&cn=gm";
     }else if(rt=="wait"){
         //method=getnearcarinfo&cn=gm&ids=&sublineid=99426&stationId=1907898&mapType=BAIDU&citycode=860515
         url=urlprefix+"method=getnearcarinfo&cn=gm&ids=&sublineid="+u_sublineid+"&stationId="+u_stationId+"&mapType=BAIDU&citycode="+u_citycode;

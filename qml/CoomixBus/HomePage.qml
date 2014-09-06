@@ -182,6 +182,7 @@ Page{
     Component.onCompleted: {
         Js.setHistoryList(s_historylist);
         historyList.model = Js.historyList;
+        positionSource.update();
         refreshNotes();
     }
 }

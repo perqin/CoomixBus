@@ -28,26 +28,6 @@ Page{
         stationListTabGroup.currentTab = searchStationsList;
         stationHeader.loading = false;
     }
-    /*function refreshAllLines(){
-        lineHeader.loading=true;
-        Js.u_citycode=s_citycode
-        console.log(Js.getUrl("all"))
-        Network.setReqUrl(Js.getUrl("all"))
-        Network.setReqType("all")
-        Network.setCitycode(s_citycode)
-        Network.retrieveData()
-    }
-    function getAllLines(){
-        lineHeader.value=Js.getCityName(s_citycode)
-        //Js.parseJson("all", jsondata);
-        Js.o_linelist=Network.getDataObj("all");
-        Js.parseJson("all","u");
-        linesList.model=Js.o_alllines;
-        lineHeader.loading=false;
-        if(initing==true){
-            initing=false;
-        }
-    }*/
 
     CommonHeader {
         id: stationHeader; icon: "images/station.svg" ;loading: false; title: "站点"

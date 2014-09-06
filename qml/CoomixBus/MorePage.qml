@@ -18,7 +18,7 @@ Page {
             ListHeading {
                 ListItemText {
                     anchors.fill: parent.paddingItem; role: "Heading"
-                    text: "查看公告"
+                    text: "公告"
                 }
             }
             Item {
@@ -55,16 +55,16 @@ Page {
             ListHeading {
                 ListItemText {
                     anchors.fill: parent.paddingItem; role: "Heading"
-                    text: "候车设置"
+                    text: "设置"
                 }
             }
             SelectionListItem {
-                title: "刷新频率"
+                title: "候车刷新频率"
                 subTitle: refreshSD.model.get(refreshSD.selectedIndex).name
                 onClicked: refreshSD.open()
                 SelectionDialog {
                     id: refreshSD
-                    titleText: "选择刷新频率"
+                    titleText: "选择候车刷新频率"
                     selectedIndex: s_refreshfrequency
                     model: ListModel {
                         ListElement { name: "不自动刷新" }
@@ -78,6 +78,50 @@ Page {
                         Settings.setValue("refreshfrequency", s_refreshfrequency);
                         if(s_refreshfrequency != 0) {
                             timerP = 0;
+                        }
+                    }
+                }
+            }
+            SelectionListItem {
+                function fre2ind(fre) {
+                    switch(fre) {
+                    case 0: return 0;
+                    case 1: return 1;
+                    case 5: return 2;
+                    case 10: return 3;
+                    case 30: return 4;
+                    default: return 0;
+                    }
+                }
+                title: "位置刷新频率(长按手动刷新)"
+                subTitle: refposSD.model.get(refposSD.selectedIndex).name
+                onClicked: refposSD.open();
+                onPressAndHold: positionSource.update();
+                SelectionDialog {
+                    id: refposSD
+                    titleText: "选择位置刷新频率";
+                    selectedIndex: parent.fre2ind(s_positionfrequency);
+                    model: ListModel {
+                        ListElement { name: "不自动刷新" }
+                        ListElement { name: "1分钟" }
+                        ListElement { name: "5分钟" }
+                        ListElement { name: "10分钟" }
+                        ListElement { name: "30分钟" }
+                    }
+                    onAccepted: {
+                        switch(selectedIndex) {
+                        case 0: s_positionfrequency = 0; break;
+                        case 1: s_positionfrequency = 1; break;
+                        case 2: s_positionfrequency = 5; break;
+                        case 3: s_positionfrequency = 10; break;
+                        case 4: s_positionfrequency = 30; break;
+                        default: s_positionfrequency = 0; break;
+                        }
+                        Settings.setValue("positionfrequency", s_positionfrequency);
+                        if(s_positionfrequency == 0) {
+                            positionTimer.running = false;
+                        }else{
+                            positionTimer.running = true;
                         }
                     }
                 }

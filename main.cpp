@@ -6,6 +6,8 @@
 #include "qmlapplicationviewer.h"
 #include "network.h"
 #include "settings.h"
+#include "qdeclarativepositionsource.h"
+//#include <QtDeclarative>
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
@@ -15,12 +17,13 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 
     app->setApplicationName ("CoomixBus");
     app->setOrganizationName ("Perqin");
-    app->setApplicationVersion ("1.0.0");
-    Settings *setting=new Settings;
+    app->setApplicationVersion ("1.1.0");
+    Settings *setting = new Settings;
 
     Network network;
 
     QmlApplicationViewer viewer;
+    qmlRegisterType<QDeclarativePositionSource>("LocationAPI", 1, 0, "PositionSource");
     viewer.setOrientation(QmlApplicationViewer::ScreenOrientationLockPortrait);
     viewer.rootContext()->setContextProperty("Network", &network);
     viewer.rootContext()->setContextProperty("Settings", setting);

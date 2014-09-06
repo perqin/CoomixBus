@@ -17,7 +17,8 @@ symbian:TARGET.UID3 = 0x205051AA
 
 # Allow network access on Symbian
 symbian {
-    TARGET.CAPABILITY += NetworkServices
+    TARGET.CAPABILITY += NetworkServices \
+            Location
 
     my_deployment.pkg_prerules += vendorinfo
 
@@ -28,8 +29,8 @@ symbian {
 
 # If your application uses the Qt Mobility libraries, uncomment the following
 # lines and add the respective components to the MOBILITY variable.
-# CONFIG += mobility
-# MOBILITY +=
+CONFIG += mobility
+MOBILITY += location
 
 # Speed up launching on MeeGo/Harmattan when using applauncherd daemon
 # CONFIG += qdeclarative-boostable
@@ -40,7 +41,8 @@ symbian {
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += main.cpp \
     network.cpp \
-    settings.cpp
+    settings.cpp \
+    qdeclarativepositionsource.cpp
 
 CONFIG += mobility
 MOBILITY = location bearer
@@ -51,7 +53,8 @@ qtcAddDeployment()
 
 HEADERS += \
     network.h \
-    settings.h
+    settings.h \
+    qgeocoordinate.h \
+    qdeclarativepositionsource.h
 
-QT += network \
-    sql
+QT += network

@@ -1,5 +1,6 @@
 import QtQuick 1.0
 import com.nokia.symbian 1.0
+import LocationAPI 1.0
 import "components"
 
 PageStackWindow {
@@ -7,9 +8,12 @@ PageStackWindow {
 
     property string s_citycode: Settings.getValue("citycode", "860515")
     property int s_refreshfrequency: Settings.getValue("refreshfrequency", 2);
+    property int s_positionfrequency: Settings.getValue("positionfrequency", 5);  //0 1 5 10 30
     property string s_historylist: Settings.getValue("historylist", "[]");
     property string s_historystationlist: Settings.getValue("historystationlist", "[]");
     property int s_shownotes: Settings.getValue("shownotes", 1);
+    property int s_informtime: Settings.getValue("informtime", 0);
+    property int S_informstation: Settings.getValue("informstation", 0);
     property bool initing: true
     property string jsondata: "u"
     property variant notesData
@@ -24,19 +28,9 @@ PageStackWindow {
     property bool carPass1: false
     property bool carPass2: false
     property bool carPass3: false
-    property string locationLat: "22.773094";
-    property string locationLng: "114.351272";
+    property string locationLat: Settings.getValue("lat", "22.773094");
+    property string locationLng: Settings.getValue("lng", "114.351272");
     property bool haveNotes: false;
-    /*{
-    "direction":"0",
-    "end_station":"大唐芙蓉园南门",
-    "id":"109682",
-    "isopen":"1",
-    "name":"237",
-    "original_name":"237路",
-    "start_station":"北陈村",
-    "service_time":"06:30-19:30"
-    }*/
 
     initialPage: HomePage {
         id: homePage
@@ -53,6 +47,10 @@ PageStackWindow {
     }
     StationBusPage {
         id: stationBusPage;
+    }
+
+    InfoBanner {
+        id: infoBanner;
     }
 
     ToolTip {
@@ -134,6 +132,26 @@ PageStackWindow {
         //onAccepted: notesDialog.close()
         //onRejected: notesDialog.close()
     }
+    PositionSource {
+        id: positionSource;
+        onPositionChanged: {
+            if(valid) {
+                locationLat = latitude;
+                locationLng = longitude;
+                infoBanner.text = "位置更新成功！";
+                infoBanner.open();
+                console.log(locationLat + "," + locationLng);
+            }
+        }
+    }
+    Timer {
+        id: positionTimer; interval: s_positionfrequency * 60000; repeat: true;
+        running: s_positionfrequency == 0 ? false : true;
+        onTriggered: {
+            positionSource.update();
+        }
+    }
+
     Connections {
         target: Network
         onSendDataChange: {
