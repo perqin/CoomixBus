@@ -1,6 +1,9 @@
 import QtQuick 1.0
 import com.nokia.symbian 1.0
+import com.nokia.extras 1.0
+import com.perqin.coomixbus 1.0
 import LocationAPI 1.0
+import QtMultimediaKit 1.1
 import "components"
 
 PageStackWindow {
@@ -8,12 +11,15 @@ PageStackWindow {
 
     property string s_citycode: Settings.getValue("citycode", "860515")
     property int s_refreshfrequency: Settings.getValue("refreshfrequency", 2);
-    property int s_positionfrequency: Settings.getValue("positionfrequency", 5);  //0 1 5 10 30
+    //property int s_positionfrequency: Settings.getValue("positionfrequency", 5);  //0 1 5 10 30
     property string s_historylist: Settings.getValue("historylist", "[]");
     property string s_historystationlist: Settings.getValue("historystationlist", "[]");
     property int s_shownotes: Settings.getValue("shownotes", 1);
     property int s_informtime: Settings.getValue("informtime", 0);
-    property int S_informstation: Settings.getValue("informstation", 0);
+    property int s_informstation: Settings.getValue("informstation", 0);
+    property bool s_alarmoftime: Settings.getValue("alarmoftime", false);
+    property bool s_alarmofstation: Settings.getValue("alarmofstation", false);
+    property int s_alarmtype: Settings.getValue("alarmtype", 1);
     property bool initing: true
     property string jsondata: "u"
     property variant notesData
@@ -30,12 +36,21 @@ PageStackWindow {
     property bool carPass3: false
     property string locationLat: Settings.getValue("lat", "22.773094");
     property string locationLng: Settings.getValue("lng", "114.351272");
+    property string temp_txt: "";
     property bool haveNotes: false;
+
+    /*function transitSearchSet(t) {
+        if(t == "o") {
+            transitPage.getDestinationList();
+        }
+        if(t == "d") {
+            transitPage.pushResult();
+        }
+    }*/
 
     initialPage: HomePage {
         id: homePage
     }
-    //initialPage: busPage
     BusPage {
         id: busPage
     }
@@ -48,10 +63,34 @@ PageStackWindow {
     StationBusPage {
         id: stationBusPage;
     }
+    /*TransitPage {
+        id: transitPage;
+    }*/
 
     InfoBanner {
         id: infoBanner;
+        function display(s) {
+            text = s;
+            open();
+        }
     }
+    Vibra {
+        id: vibra;
+    }
+    Audio {
+        id: audio;
+        source: "alarm.mp3";
+    }
+
+    /*TransitPlaceListPage {
+        id: transitPlaceListPage_o;
+    }
+    TransitPlaceListPage {
+        id: transitPlaceListPage_d;
+    }
+    TransitPlaceListPage {
+        id: transitPlaceListPage;
+    }*/
 
     ToolTip {
         id: toolTip
@@ -69,7 +108,13 @@ PageStackWindow {
             iconSource: pageStack.depth<=1 ? "images/quit.svg" : "toolbar-back"
             onClicked: {
                 if(pageStack.depth<=1){
-                    quitDialog.open();
+                    //quitDialog.open();
+                    if(quitTimer.running) {
+                        Qt.quit();
+                    }else{
+                        infoBanner.display("再按一次退出");
+                        quitTimer.start();
+                    }
                 }else{
                     pageStack.pop();
                 }
@@ -92,12 +137,13 @@ PageStackWindow {
                 stationPage.updateListView();
             }
         }
-        ToolButtonWithTip {
+        /*ToolButtonWithTip {
             toolTipText: "换乘"
-            iconSource: "images/transfer.svg"
+            iconSource: "images/transit.svg"
             onClicked: {
+                mainTools.toPage(transitPage);
             }
-        }
+        }*/
         ToolButtonWithTip {
             toolTipText: "更多"
             iconSource: "images/more.svg"
@@ -134,22 +180,9 @@ PageStackWindow {
     }
     PositionSource {
         id: positionSource;
-        onPositionChanged: {
-            if(valid) {
-                locationLat = latitude;
-                locationLng = longitude;
-                infoBanner.text = "位置更新成功！";
-                infoBanner.open();
-                console.log(locationLat + "," + locationLng);
-            }
-        }
     }
     Timer {
-        id: positionTimer; interval: s_positionfrequency * 60000; repeat: true;
-        running: s_positionfrequency == 0 ? false : true;
-        onTriggered: {
-            positionSource.update();
-        }
+        id: quitTimer; interval: 3000; repeat: false; running: false; triggeredOnStart: true;
     }
 
     Connections {
@@ -180,7 +213,14 @@ PageStackWindow {
             }else if(Network.reqType == "stbu"){
                 console.log("qml--stbu");
                 stationBusPage.getStationBusList();
-            }
+            }else if(Network.reqType == "nbst"){
+                console.log("qml--nbst");
+                stationPage.getNearbyStations();
+            }/*else if(Network.reqType == "trse"){
+                transitPage.getTransitSearch();
+            }else if(Network.reqType == "tplp"){
+                transitPlaceListPage.getList();
+            }*/
         }
     }
 }

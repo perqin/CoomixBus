@@ -82,47 +82,44 @@ Page {
                     }
                 }
             }
-            SelectionListItem {
-                function fre2ind(fre) {
-                    switch(fre) {
-                    case 0: return 0;
-                    case 1: return 1;
-                    case 5: return 2;
-                    case 10: return 3;
-                    case 30: return 4;
-                    default: return 0;
+            ListItem {
+                //id: alarmOfTime;
+                CheckBox {
+                    id: alarmOfTime; text: "提前3分钟到站提醒"; checked: s_alarmoftime;
+                    anchors.left: parent.paddingItem.left; anchors.verticalCenter: parent.paddingItem.verticalCenter;
+                    onClicked: {
+                        s_alarmoftime = checked;
+                        Settings.setValue("alarmoftime", s_alarmoftime);
                     }
                 }
-                title: "位置刷新频率(长按手动刷新)"
-                subTitle: refposSD.model.get(refposSD.selectedIndex).name
-                onClicked: refposSD.open();
-                onPressAndHold: positionSource.update();
+            }
+            ListItem {
+                //id: alarmOfTime;
+                CheckBox {
+                    id: alarmOfStation; text: "提前3个站到站提醒"; checked: s_alarmofstation;
+                    anchors.left: parent.paddingItem.left; anchors.verticalCenter: parent.paddingItem.verticalCenter;
+                    onClicked: {
+                        s_alarmofstation = checked;
+                        Settings.setValue("alarmofstation", s_alarmofstation);
+                    }
+                }
+            }
+            SelectionListItem {
+                title: "提醒方式";
+                subTitle: alarmSD.model.get(alarmSD.selectedIndex).name;
+                onClicked: alarmSD.open();
                 SelectionDialog {
-                    id: refposSD
-                    titleText: "选择位置刷新频率";
-                    selectedIndex: parent.fre2ind(s_positionfrequency);
+                    id: alarmSD
+                    titleText: "选择提醒方式"
+                    selectedIndex: s_alarmtype
                     model: ListModel {
-                        ListElement { name: "不自动刷新" }
-                        ListElement { name: "1分钟" }
-                        ListElement { name: "5分钟" }
-                        ListElement { name: "10分钟" }
-                        ListElement { name: "30分钟" }
+                        ListElement { name: "仅响提示音" }
+                        ListElement { name: "仅震动" }
+                        ListElement { name: "响提示音并震动" }
                     }
                     onAccepted: {
-                        switch(selectedIndex) {
-                        case 0: s_positionfrequency = 0; break;
-                        case 1: s_positionfrequency = 1; break;
-                        case 2: s_positionfrequency = 5; break;
-                        case 3: s_positionfrequency = 10; break;
-                        case 4: s_positionfrequency = 30; break;
-                        default: s_positionfrequency = 0; break;
-                        }
-                        Settings.setValue("positionfrequency", s_positionfrequency);
-                        if(s_positionfrequency == 0) {
-                            positionTimer.running = false;
-                        }else{
-                            positionTimer.running = true;
-                        }
+                        s_alarmtype = selectedIndex;
+                        Settings.setValue("alarmtype", s_alarmtype);
                     }
                 }
             }
@@ -142,7 +139,7 @@ Page {
                     }
                     ListItemText {
                         role: "SubTitle"; mode: versionLI.mode
-                        text: "1.1.0"
+                        text: "1.2.1"
                     }
                 }
             }

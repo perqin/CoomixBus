@@ -70,7 +70,7 @@ Page{
             Text {
                 anchors.verticalCenter: parent.verticalCenter; color: "White"
                 anchors.right: parent.right; anchors.rightMargin: 35;
-                text: modelData.isopen == "0" ? "未开通" : (modelData.wait_time == 99999 ? "尚未发车" : ("还有" + Js.dtc((modelData.wait_time - (modelData.wait_time % 60))/60) + "分钟"));
+                text: modelData.isopen == "0" ? "未开通" : (modelData.wait_time == 99999 ? "尚未发车" : (((modelData.wait_time - (modelData.wait_time % 60))/60) > 1 ? ("还有" + Js.dtc((modelData.wait_time - (modelData.wait_time % 60))/60) + "分钟") : "即将到站"));
             }
             onClicked: {
                 if(modelData.isopen == "1") {
@@ -91,7 +91,7 @@ Page{
                     directionChanged = false;
                     locationLat = modelData.station.lat;
                     locationLng = modelData.station.lng;
-                    busPage.refreshLine();
+                    busPage.refreshLine2();
                 }
             }
         }

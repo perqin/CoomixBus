@@ -16,6 +16,16 @@ Item {
             tem_z=Js.getZ(carsData[0].stationid, stationData.id);
             if(tem_z > 1){
                 c0.text=carsData[0].name+"\n还有"+Js.tT(tem_z)+"站,约"+Js.getM(carsData[0].waittime)+"分"+Js.getS(carsData[0].waittime)+"秒";
+                if(((tem_z == 3)&& s_alarmofstation)||((Js.getM(carsData[0].waittime) == "3")&& s_alarmoftime)) {
+                    infoBanner.display(carsData[0].name+"还有"+Js.tT(tem_z)+"站到站,约"+Js.getM(carsData[0].waittime)+"分"+Js.getS(carsData[0].waittime)+"秒,请做好准备！");
+                    switch(s_alarmtype)
+                    {
+                    case 0: audio.play(); break;
+                    case 1: vibra.start(800); break;
+                    case 2: audio.play(); vibra.start(800); break;
+                    default: break;
+                    }
+                }
             }else if(tem_z == 1){
                 //if(carsData[0].stationstate=="1"){
                     c0.text=carsData[0].name+"\n即将进站，请做好准备";

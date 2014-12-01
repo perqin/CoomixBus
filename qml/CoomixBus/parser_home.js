@@ -40,13 +40,19 @@ function appendHistory(obje) {
 }
 
 function checkPre(s, p){
-    var b = true;
-    for(var i = 0; i < p.length; i++){
-        if(s[i] != p[i]){
-            b = false;
+    var b;
+    for (var j = 0; j <= s.length - p.length; j++) {
+        b = true;
+        for(var i = 0; i < p.length; i++){
+            if(s[i + j] != p[i]){
+                b = false;
+                break;
+            }
         }
+        if(b)
+            return true;
     }
-    return b;
+    return false;
 }
 
 function parseJson(t,j){
@@ -68,7 +74,7 @@ function filterIt(pre){
         if(checkPre(o_alllines[i].name, pre)){
             tem_c += 1;
             tem_arr[tem_c] = o_alllines[i];
-            //console.log("ok");
+            console.log(o_alllines[i].name);
         }else{
             //console.log("no");
         }

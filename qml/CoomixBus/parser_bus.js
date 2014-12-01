@@ -1,5 +1,6 @@
 var urlprefix = "http://busapi.gpsoo.net/v1/bus/mbcommonservice?";
-var u_citycode, u_sublineid, u_lastmodi, u_lat, u_lng, u_stationId;
+var u_citycode, u_sublineid, u_lat, u_lng, u_stationId;
+var u_lastmodi = "0";
 var u_ids="";
 var o_line, o_bus;
 var d_direction=0;
@@ -46,11 +47,11 @@ function parseJson(t,j){
     }
 }
 
-//method=getnearcarinfov4&sublineid=99566&mapType=BAIDU&citycode=860515&cn=gm&posmaptype=BAIDU&lastmodi=0&lat=4.9E-324&lng=4.9E-324
 function getUrl(rt){
     var url="";
     if(rt=="line"){
-        url=urlprefix+"method=getnearcarinfov4&sublineid="+u_sublineid+"&mapType=BAIDU&citycode="+u_citycode+"&cn=gm&posmaptype=BAIDU&lastmodi="+u_lastmodi+"&lat="+u_lat+"&lng="+u_lng;
+        //method=getnearcarinfov4&sublineid=99566&mapType=BAIDU&citycode=860515&cn=gm&posmaptype=BAIDU&lastmodi=0&lat=4.9E-324&lng=4.9E-324
+        url=urlprefix+"method=getnearcarinfov4&sublineid="+u_sublineid+"&mapType=BAIDU&citycode="+u_citycode+"&cn=gm&posmaptype=BAIDU&lastmodi=0&lat="+u_lat+"&lng="+u_lng;
     }else if(rt=="wait"){
         //method=getnearcarinfo&cn=gm&ids=&sublineid=99426&stationId=1907898&mapType=BAIDU&citycode=860515
         url=urlprefix+"method=getnearcarinfo&cn=gm&ids=&sublineid="+u_sublineid+"&stationId="+u_stationId+"&mapType=BAIDU&citycode="+u_citycode;

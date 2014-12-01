@@ -1,3 +1,4 @@
+VERSION = 1.2.1
 # Add more folders to ship with the application, here
 folder_01.source = qml/CoomixBus
 folder_01.target = qml
@@ -20,12 +21,17 @@ symbian {
     TARGET.CAPABILITY += NetworkServices \
             Location
 
+    DEFINES += QVIBRA
+
     my_deployment.pkg_prerules += vendorinfo
 
     DEPLOYMENT += my_deployment
+    DEPLOYMENT.display_name = 酷米客公交
 
     vendorinfo += "%{\"Perqin\"}" ":\"Perqin\""
 }
+
+contains(DEFINES, QVIBRA): include(./QVibra/vibra.pri)
 
 # If your application uses the Qt Mobility libraries, uncomment the following
 # lines and add the respective components to the MOBILITY variable.

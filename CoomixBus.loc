@@ -5,12 +5,12 @@
 // ============================================================================
 
 #ifdef LANGUAGE_SC
-#define STRING_r_short_caption "CoomixBus"
-#define STRING_r_caption "CoomixBus"
+#define STRING_r_short_caption "酷米客公交"
+#define STRING_r_caption "酷米客公交"
 #elif defined LANGUAGE_31
 #define STRING_r_short_caption "酷米客公交"
 #define STRING_r_caption "酷米客公交"
 #else
-#define STRING_r_short_caption "CoomixBus"
-#define STRING_r_caption "CoomixBus"
+#define STRING_r_short_caption "酷米客公交"
+#define STRING_r_caption "酷米客公交"
 #endif

@@ -23,9 +23,20 @@ Page{
     }
     function getSearchStations(){
         Js.parseIt(jsondata);
-        console.log("####----####"+jsondata+"####----####");
         searchStationsList.model = Js.searchList;
         stationListTabGroup.currentTab = searchStationsList;
+        stationHeader.loading = false;
+    }
+    function refreshNearbyStations() {
+        stationHeader.loading = true;
+        Network.setReqUrl(Js.getUrlNearby(locationLat, locationLng, s_citycode));
+        Network.setReqType("nbst");
+        Network.retrieveData();
+    }
+    function getNearbyStations() {
+        Js.parseNearby(jsondata);
+        nearbyStationsList.model = Js.nearbyList;
+        stationListTabGroup.currentTab = nearbyStationsList;
         stationHeader.loading = false;
     }
 
@@ -76,7 +87,9 @@ Page{
             id: nearbyStations
             text: "附近站点"
             onClicked: {
-                stationListTabGroup.currentTab = nearbyStationsList;
+                positionListener.target = positionSource;
+                positionSource.update();
+                //stationListTabGroup.currentTab = nearbyStationsList;
             }
         }
     }
@@ -98,13 +111,13 @@ Page{
             clip: true; width: parent.width; anchors.bottom: parent.bottom;
             anchors.top: parent.top; anchors.topMargin: historyOrNearby.height + 15;
             //model: Js.historyList
-            delegate: stationsListDelegate
+            delegate: nearbyStationsListDelegate
         }
         ListView {
             id: searchStationsList
             clip: true; anchors.fill: parent;
             //model: Js.historyList
-            delegate: stationsListDelegate
+            delegate: stationsListDelegate;
         }
     }
     Component {
@@ -126,6 +139,44 @@ Page{
                 stationBusPage.uqi_stationname = modelData.station_name;
                 stationBusPage.refreshStationBusList();
             }
+        }
+    }
+    Component {
+        id: nearbyStationsListDelegate
+        ListItem {
+            ListItemText {
+                mode: parent.mode
+                role: "Title"
+                text: modelData.name;
+                anchors.verticalCenter: parent.verticalCenter; anchors.left: parent.paddingItem.left;
+            }
+            onClicked: {
+                Js.setHistoryList(s_historystationlist);
+                var md_temp = new Object();
+                md_temp.station_name = modelData.name;
+                Js.appendHistory(md_temp);
+                s_historystationlist = Js.historyListString;
+                Settings.setValue("historystationlist", s_historystationlist);
+                historyStationsList.model = Js.historyList;
+                pageStack.push(stationBusPage);
+                stationBusPage.uqi_stationname = modelData.name;
+                stationBusPage.refreshStationBusList();
+            }
+        }
+    }
+    Connections {
+        id: positionListener;
+        target: null;
+        onPositionChanged: {
+            if(positionSource.valid) {
+                //locationLat = positionSource.latitude;
+                //locationLng = positionSource.longitude;
+                locationLat = "22.7770507335663";
+                locationLng = "114.319546222687";
+                console.log("*******************************************************" + locationLat + "," + locationLng);
+            }
+            positionListener.target = null;
+            refreshNearbyStations();
         }
     }
 }

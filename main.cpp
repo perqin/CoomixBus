@@ -7,7 +7,10 @@
 #include "network.h"
 #include "settings.h"
 #include "qdeclarativepositionsource.h"
-//#include <QtDeclarative>
+
+#ifdef QVIBRA
+#include "QVibra/qvibra.h"
+#endif
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
@@ -17,13 +20,18 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
 
     app->setApplicationName ("CoomixBus");
     app->setOrganizationName ("Perqin");
-    app->setApplicationVersion ("1.1.0");
+    app->setApplicationVersion ("1.2.0");
     Settings *setting = new Settings;
 
     Network network;
 
     QmlApplicationViewer viewer;
     qmlRegisterType<QDeclarativePositionSource>("LocationAPI", 1, 0, "PositionSource");
+#ifdef QVIBRA
+    qmlRegisterType<QVibra>("com.perqin.coomixbus", 1, 0, "Vibra");
+#elif defined(Q_WS_SIMULATOR)
+    qmlRegisterType<QObject>("com.perqin.coomixbus", 1, 0, "Vibra");
+#endif
     viewer.setOrientation(QmlApplicationViewer::ScreenOrientationLockPortrait);
     viewer.rootContext()->setContextProperty("Network", &network);
     viewer.rootContext()->setContextProperty("Settings", setting);

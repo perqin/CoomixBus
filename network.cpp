@@ -98,7 +98,13 @@ void Network::handleNetworkData(QNetworkReply *networkReply)
                     if(data_qba.at(l) == '{'){ pl = l; }
                     if(data_qba.at(l) == '}'){
                         tem = data_qba.mid(pl, l - pl + 1);
-                        m_AllLines.append(tem);
+                        int k = 0;
+                        while (tem.mid(k, 6) != "isopen") { ++k; }
+                        if (tem.at(k + 9) == '1')
+                        {
+                            qDebug() << tem;
+                            m_AllLines.append(tem);
+                        }
                     }
                 }
                 setData("all");

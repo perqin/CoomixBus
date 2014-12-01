@@ -1,6 +1,7 @@
 var urlprefix = "http://busapi.gpsoo.net/v1/bus/mbcommonservice?";
 var searchList = new Array();
 var historyList = new Array();
+var nearbyList = new Array();
 var historyListString = "[]";
 /*var allList, filterList;
 var cityList;
@@ -105,11 +106,22 @@ function parseIt(d) {
     //for(var k = 0; k < o.data.length; k++){console.log(o.data[k].station_name + "///");}
 }
 
+function parseNearby(d) {
+    var o = JSON.parse(d);
+    nearbyList = o.data;
+}
+
 function getUrl(cc, sn){
     //method=getmatchedstations&citycode=860515&mapType=G_NORMAL_MAP&cn=gm&stationname=%E6%B7%B1%E5%9C%B3
     var url="";
     url=urlprefix+"method=getmatchedstations&citycode=" + cc + "&mapType=G_NORMAL_MAP&cn=gm&stationname=" + sn;
     //url=urlprefix+"method=getmatchedstations&citycode=" + cc + "&mapType=G_NORMAL_MAP&cn=gm&stationname=" + encodeURI(sn);
+    return url;
+}
+
+function getUrlNearby(lat, lng, cc) {
+    var url = "";
+    url = urlprefix + "method=get_station_refpos&lng=" + lng + "&lat=" + lat + "&mapType=BAIDU_MAP&posmaptype=BAIDU_MAP&citycode=" + cc;
     return url;
 }
 

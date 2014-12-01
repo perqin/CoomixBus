@@ -1,7 +1,6 @@
 import QtQuick 1.0
 import com.nokia.symbian 1.0
 //import com.nokia.extras 1.0
-//import Qt.labs.components 1.0
 import "components"
 import "parser_bus.js" as Js
 
@@ -16,6 +15,7 @@ Page{
             toolTipText: "返回"
             iconSource: "toolbar-back"
             onClicked: {
+                refreshBusTimer.stop();
                 pageStack.pop();
             }
         }
@@ -48,31 +48,29 @@ Page{
     }
 
     function refreshLine(){
-/*sublineid=99566
-citycode=860515
-lastmodi=0
-lat=4.9E-324
-lng=4.9E-324*/
+        positionListenerForLine.target = positionSource;
+        positionSource.update();
+    }
+    function refreshLine2() {
         busHeader.loading=true;
         Js.u_citycode=s_citycode;
-        Js.u_lastmodi="0";
-        Js.u_lat=locationLat;
-        Js.u_lng=locationLng;
-        Js.u_sublineid=lineData.id;
-        console.log(Js.getUrl("line"))
-        Network.setReqUrl(Js.getUrl("line"))
-        Network.setReqType("line")
-        Network.setCitycode(s_citycode)
-        Network.retrieveData()
+        //Js.u_lastmodi="0";
+        Js.u_lat = locationLat;
+        Js.u_lng = locationLng;
+        Js.u_sublineid = lineData.id;
+        Network.setReqUrl(Js.getUrl("line"));
+        Network.setReqType("line");
+        Network.setCitycode(s_citycode);
+        Network.retrieveData();
     }
     function refreshDirection(d){
         busHeader.loading=true;
         Js.u_citycode=s_citycode;
-        Js.u_lastmodi="0";
+        //Js.u_lastmodi="0";
         Js.u_lat=Js.o_line.data.station.lat;
         Js.u_lng=Js.o_line.data.station.lng;
         Js.u_sublineid=Js.o_line.data.dir[d].id;
-        console.log(Js.getUrl("line"));
+        //console.log(Js.getUrl("line"));
         Network.setReqUrl(Js.getUrl("line"));
         Network.setReqType("line");
         Network.setCitycode(s_citycode);
@@ -182,7 +180,7 @@ lng=4.9E-324*/
     }*/
 
     BusHeader {
-        id: busHeader; icon: "images/transfer.svg" ;loading: false
+        id: busHeader; icon: "images/transit.svg" ;loading: false
         textL: "LINENAME";
         textR1: "首末班 HH:MM-HH:MM"; textR2: "全程P元"
     }
@@ -235,7 +233,7 @@ lng=4.9E-324*/
                 }
             }
             CarList {
-                id: carList
+                id: carList;
             }
             Image {
                 id: carIcon0; width: 60; height: 40
@@ -315,6 +313,19 @@ lng=4.9E-324*/
                     refreshStation();
                 }
             }
+        }
+    }
+    Connections {
+        id: positionListenerForLine;
+        target: null;
+        onPositionChanged: {
+            if(positionSource.valid) {
+                locationLat = positionSource.latitude;
+                locationLng = positionSource.longitude;
+                console.log("*******************************************************" + locationLat + "," + locationLng);
+            }
+            positionListenerForLine.target = null;
+            refreshLine2();
         }
     }
     /*Timer {
